@@ -1,13 +1,15 @@
 #include <iostream>
 #include <stack>
 #include <stdlib.h>
+#include <Windows.h>
+
 using namespace std;
 
 const int playerOne = 1;
 const int playerTwo = 2;
 int currentPlayer;
-
-const int boardSize = 9;
+char playerMarker = 's';
+const int boardSize = 3;
 
 int movePlayer = 0;
 
@@ -17,35 +19,33 @@ bool playerOneWon = false;
 bool playerTwoWon = false;
 bool isEmpty = false;
 
-int gameBoard[boardSize];
+char gameBoard[boardSize][boardSize] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9' } };
 
-void initGame()
-{
-	for (int i = 0; i < boardSize; i++)
-	{
-		gameBoard[i] = 0;
-	}
-	for (int j = 0; j < boardSize; j++)
-	{
-		cout << gameBoard[j] << "\t";
-	}
-	cout << "\n";
-}
 
 void drawBoard()
 { 
-	printf("_________________________________________________\n");
-	printf("|\t\t|\t\t|\t\t|\n");
-	printf("_________________________________________________\n");
-	printf("|\t\t|\t\t|\t\t|\n");
-	printf("_________________________________________________\n");
-	printf("|\t\t|\t\t|\t\t|\n");
-	printf("_________________________________________________\n");
+	cout << "\t\t\t\t_________________________________________________\n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t|\t" << gameBoard[0][0] << "\t | \t" << gameBoard[0][1] << "\t | \t" << gameBoard[0][2] << "\t | \n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t_________________________________________________\n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t|\t" << gameBoard[1][0] << "\t | \t" << gameBoard[1][1] << "\t | \t" << gameBoard[1][2] << "\t | \n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t_________________________________________________\n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t|\t" << gameBoard[2][0] << "\t | \t" << gameBoard[2][1] << "\t | \t" << gameBoard[2][2] << "\t | \n";
+	cout << "\t\t\t\t|\t\t|\t\t|\t\t|\n";
+	cout << "\t\t\t\t_________________________________________________\n";
+	cout << "\n\n\n";
 }
 
 void printRules()
 {
-	// TODO: print the rules of the game to console
+	cout << "\n\t\t\t\t\t\tTIC TAC TOE\n";
+	cout << "\n\t\t\t\t\t  Player 1 = X, Player 2 = O\n";
+	cout << "\n\t\t\t\t   First player to get three in a row wins.\n";
+	cout << "\n\n\n";
 }
 
 
@@ -54,30 +54,98 @@ int startingPlayer()
 	// Making sure that the seed for random numbers always are different (Synched to the system clock)
 	srand(time(NULL));
 	int startingPlayer = 1 + rand() % 2;
-
-
-	if (!startingPlayer == 0)
-	{
-		return startingPlayer;
-	}
-	else
-	{
-		startingPlayer = rand() % 2 + 1;
-	}
+	return startingPlayer;
 }
 
 void startGame()
 {
-	// TODO: Start the game
-	//		 Flip coin who starts, player one or player two.
-	//		 Implement this with random number generator. 
-	//		set winner to currently playing.
+	cout << "Press space to flip a coin who shall start.";
+	
+	while (!(GetKeyState(0x20) & 0x8000));		// VK_SPACE
+
 	currentPlayer = startingPlayer();
-	cout << "player:\t" << currentPlayer << " is first to go.";
+
+	if (currentPlayer == playerOne)
+		playerMarker = 'X';
+	else
+		playerMarker = 'O';
+
+	cout << "\n\nplayer:\t" << currentPlayer << " starts.";
+}
+
+void switchPlayer()
+{
+	if (currentPlayer == playerOne)
+	{
+		playerMarker = 'O';
+		currentPlayer = playerTwo;
+	}
+	else if (currentPlayer == playerTwo)
+	{
+		currentPlayer = playerOne;
+		playerMarker = 'X';
+	}
+}
+
+bool isSquareEmpty(int move, int index)
+{
+
+	if (move > 0 && move < 4)
+	{
+		if ((gameBoard[0][index] != 'X') && (gameBoard[0][index] != 'O'))
+		{
+			return true;
+		}
+	}
+	else if (move > 3 && move < 7)
+	{
+		if ((gameBoard[1][index] != 'X') && (gameBoard[1][index] != 'O'))
+		{
+			return true;
+		}
+	}
+	else if (move > 6 && move < 10)
+	{
+		if ((gameBoard[2][index] != 'X') && (gameBoard[2][index] != 'O'))
+		{
+			return true;
+		}
+	}
+	else if (move > 9 || move < 1)
+	{
+		cout << "Not a valid move, please choose a number betwen 1-9\n>>  ";
+		int newMove;
+		cin >> newMove;
+		if (isSquareEmpty(newMove, index))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void makeAMove(int move, int index, char playerMarker)
+{
+	if (move > 0 && move < 4)
+	{
+		gameBoard[0][index] = playerMarker;
+	}
+	else if (move > 3 && move < 7)
+	{
+		gameBoard[1][index] = playerMarker;
+	}
+	else if (move > 6 && move < 10)
+	{
+		gameBoard[2][index] = playerMarker;
+	}
 }
 
 void isGameOver()
 {
+	// Specify winning conditions
+	// Check wining conditions
+	// if player won - do something
+
 	/*
 	if (player == playerOne)
 	{
@@ -88,65 +156,44 @@ void isGameOver()
 	*/
 }
 
-void switchPlayer()
-{
-	if (currentPlayer == playerOne)
-	{
-		currentPlayer = playerTwo;
-	}
-	else if (currentPlayer == playerTwo)
-	{
-		currentPlayer = playerOne;
-	}
-}
-
-bool isSquareEmpty(int move)
-{
-	if (gameBoard[move - 1] > 0)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-void makeAMove(int movePlayer)
-{
-	gameBoard[movePlayer-1] = currentPlayer;
-
-	for (int j = 0; j < boardSize; j++)
-	{
-		cout << gameBoard[j] << "\t";
-	}
-	cout << "\n";
-}
-
 int main()
 {
-	initGame();
-	drawBoard();
 	printRules();
+	drawBoard();
 	startGame();
+	
 
 	while (isRunning)
 	{
-		cout << "Player " << currentPlayer << ": Please make a move";
+		cout << "\nPlayer " << currentPlayer << ": Please make a move";
 		cin >> movePlayer;
 
-		// check if the square is not already occupied
-		isEmpty = isSquareEmpty(movePlayer);
+		cout << "playerMarker = \t" << playerMarker;
 
-		if (isEmpty)
+		int index = movePlayer % 3;
+		if (index == 0)
 		{
-			makeAMove(movePlayer);
+			index = 2;
 		}
 		else 
 		{
-			cout << "This square is already taken, please choose another.\n";
-			cin >> movePlayer;
+			index = index - 1;
 		}
+
+		// check if the square is not already occupied
+		if (isSquareEmpty(movePlayer, index))
+		{
+			makeAMove(movePlayer, index, playerMarker);
+			switchPlayer();
+			printRules();
+			drawBoard();
+		}
+		else
+		{
+			cout << "This square is already taken, please choose another.\n";
+		}
+	}
+		
 		/*
 		if (playerOneWon)
 		{
@@ -159,14 +206,13 @@ int main()
 			isRunning = false;
 		}
 
-		makeAMove();
 		updateGameBoard();
 		isGameOver();
-		switchPlayer();
 		*/
-	}
+		//}
+		
 
-	return 0;
-}
+		return 0;
+	}
 
 
