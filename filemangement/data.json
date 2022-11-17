@@ -1,0 +1,17 @@
+{
+    "data":
+    [
+        {
+            "temp" : 2.6,
+            "sted" : "Halden"
+        },
+        {
+            "temp" : 3.6,
+            "sted" : "Fredrikstad"
+        },
+        {
+            "temp" : 29.9,
+            "sted" : "Noen sted varmt"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+hej jeg er en fil
+en ny rad
+enda en ny rad
+hej hej hej
+slutt 
